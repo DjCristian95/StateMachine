@@ -2,6 +2,6 @@
 
 #pragma hdrstop
 
-#include "regulableLampComposite.h"
+#include "shoppingCartComposite.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)

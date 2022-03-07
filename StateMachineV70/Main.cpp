@@ -8,7 +8,7 @@
   #define _tmain main
 #endif
 
-#include "regulableLampComposite.h"
+#include "shoppingCartComposite.h"
 
 #include <iostream>
 #include <conio.h>
@@ -17,37 +17,37 @@
 
 //Version 2.0//
 
-void testRegulableLamp() {
+void testShoppingCart() {
 
-    RegulableLamp* regulableLamp = new RegulableLamp(50) ;
-	std::cout << "Estado inicial: " ; regulableLamp->actualState() ;
+	ShoppingCart* shoppingCart = new ShoppingCart(50) ;
+	std::cout << "Estado inicial: " ; shoppingCart->actualState() ;
 
-	regulableLamp->on() ;
-	std::cout << "Estado actual: " ; regulableLamp->actualState() ;
-	std::cout << "Sub-Estado on: " ; regulableLamp->getOnSubState() ;
+	shoppingCart->on() ;
+	std::cout << "Estado actual: " ; shoppingCart->actualState() ;
+	std::cout << "Sub-Estado on: " ; shoppingCart->getOnSubState() ;
 
-    regulableLamp->increment() ;
-    std::cout << "Intensidad: " << regulableLamp->intensity() << std::endl ;
+	shoppingCart->increment() ;
+	std::cout << "Intensidad: " << shoppingCart->intensity() << std::endl ;
 
-	std::cout << "Estado actual: " ; regulableLamp->actualState() ;
-	std::cout << "Sub-Estado on: " ; regulableLamp->getOnSubState() ;
+	std::cout << "Estado actual: " ; shoppingCart->actualState() ;
+	std::cout << "Sub-Estado on: " ; shoppingCart->getOnSubState() ;
 	std::cout << std::endl ;
 
-    regulableLamp->decrement() ;
-    std::cout << "Intensidad: " << regulableLamp->intensity() << std::endl ;
-	std::cout << "Estado actual: " ; regulableLamp->actualState() ;
-    std::cout << "Sub-Estado on: " ; regulableLamp->getOnSubState() ;
+	shoppingCart->decrement() ;
+	std::cout << "Intensidad: " << shoppingCart->intensity() << std::endl ;
+	std::cout << "Estado actual: " ; shoppingCart->actualState() ;
+	std::cout << "Sub-Estado on: " ; shoppingCart->getOnSubState() ;
 	std::cout << std::endl ;
 
-	regulableLamp->off() ;
-	std::cout << "Estado actual: " ; regulableLamp->actualState() ;
-	std::cout << "Estado composite: " ; regulableLamp->getOnSubState() ;
+	shoppingCart->off() ;
+	std::cout << "Estado actual: " ; shoppingCart->actualState() ;
+	std::cout << "Estado composite: " ; shoppingCart->getOnSubState() ;
 
 }
 
-int _tmain(int argc, _TCHAR* argv[]) 
+int main()
 {
-    testRegulableLamp() ;
+	testShoppingCart() ;
 
 	getch() ;
 

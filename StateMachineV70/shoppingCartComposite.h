@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 
-#ifndef regulableLampCompositeH
-#define regulableLampCompositeH
+#ifndef shoppingCartCompositeH
+#define shoppingCartCompositeH
 
 
 #include "event.h"
@@ -12,7 +12,7 @@
 #include <iostream>
 
 //forward declaration
-class RegulableLamp ;
+class ShoppingCart ;
 
 // Eventos globales
 IEvent* eventOff = nullptr ;
@@ -30,34 +30,34 @@ IState* regulableState = nullptr ;
 
 class IncrementAction : public IAction {
 public:
-    IncrementAction( RegulableLamp* regulableLamp ) ;
+	IncrementAction( ShoppingCart* shoppingCart ) ;
     virtual ~IncrementAction() ;
 
     void doAction() ;
 
 private:
-    RegulableLamp* _regulableLamp ;
+	ShoppingCart* _shoppingCart ;
 } ;
 
 class DecrementAction : public IAction {
 public:
-    DecrementAction( RegulableLamp* regulableLamp ) ;
+	DecrementAction( ShoppingCart* shoppingCart ) ;
     virtual ~DecrementAction() ;
 
     void doAction() ;
 
 private:
-    RegulableLamp* _regulableLamp ;
+    ShoppingCart* _shoppingCart ;
 } ;
 
 
 class ChangeAction : public IAction {
 public:
-    ChangeAction( RegulableLamp* lamp ) ;
+	ChangeAction( ShoppingCart* shCart ) ;
     ~ChangeAction() ;
     void doAction() ;
 private:
-    RegulableLamp* _lamp ;
+	ShoppingCart* _shCart ;
 } ;
 
 
@@ -82,9 +82,9 @@ class ExitAction : public IAction {
 } *exitAction = new ExitAction ;
 
 // REGULABLE LAMP
-class RegulableLamp {
+class ShoppingCart {
 public:
-    RegulableLamp( int intensity ) : _minPower(0), _maxPower(100), _intensity( intensity ), _lifetime(10) {
+	ShoppingCart( int intensity ) : _minPower(0), _maxPower(100), _intensity( intensity ), _lifetime(10) {
         // ACCIONES
         _onChangeAction = new ChangeAction( this ) ; // update
         _incAction = new IncrementAction( this ) ;
@@ -135,8 +135,8 @@ public:
 
     }
 
-	virtual ~RegulableLamp() { //
-        std::cout << "regulable lamp destroy" ;
+	virtual ~ShoppingCart() { //
+		std::cout << "Shopping Cart destroy" ;
     }
 
     void on() {
@@ -169,12 +169,12 @@ public:
 	}
 
 	void intensityIncrement() {
-        if ( RegulableLamp::_intensity < _maxPower ) RegulableLamp::_intensity++ ;
+		if ( ShoppingCart::_intensity < _maxPower ) ShoppingCart::_intensity++ ;
         std::cout << "Intensidad incrementa" << std::endl ; //
     }
 
 	void intensityDecrement() {
-        if ( RegulableLamp::_intensity > _minPower ) RegulableLamp::_intensity-- ;
+		if ( ShoppingCart::_intensity > _minPower ) ShoppingCart::_intensity-- ;
         std::cout << "Intensidad disminuye "<< std::endl ; //
     }
     unsigned int intensity() {
@@ -193,8 +193,8 @@ public:
     }
 
 private:
-    RegulableLamp( const RegulableLamp& ) ;
-    RegulableLamp& operator = ( const RegulableLamp& ) ;
+	ShoppingCart( const ShoppingCart& ) ;
+	ShoppingCart& operator = ( const ShoppingCart& ) ;
     unsigned int _maxPower ;
     unsigned int _minPower ;
 
@@ -220,30 +220,30 @@ private:
 } ;
 
 // ACCIONES implementación
-IncrementAction::IncrementAction( RegulableLamp* regulableLamp ) : _regulableLamp(regulableLamp) { }
+IncrementAction::IncrementAction( ShoppingCart* shoppingCart ) : _shoppingCart(shoppingCart) { }
 
 IncrementAction::~IncrementAction() { }
 
 void IncrementAction::doAction() {
-    _regulableLamp->intensityIncrement() ;
+	_shoppingCart->intensityIncrement() ;
 }
 
 
-DecrementAction::DecrementAction( RegulableLamp* regulableLamp ) : _regulableLamp(regulableLamp) { }
+DecrementAction::DecrementAction( ShoppingCart* shoppingCart ) : _shoppingCart(shoppingCart) { }
 
 DecrementAction::~DecrementAction() { }
 
 void DecrementAction::doAction() {
-    _regulableLamp->intensityDecrement() ;
+	_shoppingCart->intensityDecrement() ;
 }
 
-ChangeAction::ChangeAction( RegulableLamp* lamp ) : _lamp(lamp) { }
+ChangeAction::ChangeAction( ShoppingCart* shCart ) : _shCart(shCart) { }
 
 ChangeAction::~ChangeAction() { }
 
 void ChangeAction::doAction() {
-    std::cout << "CHANGE ACTION:: " << "El estado actual es:" ; _lamp->actualState() ;
-    std::cout << "la intensidad es: " << _lamp->intensity() << std::endl ;
+    std::cout << "CHANGE ACTION:: " << "El estado actual es:" ; _shCart->actualState() ;
+    std::cout << "la intensidad es: " << _shCart->intensity() << std::endl ;
 }
 
 
