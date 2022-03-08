@@ -4,17 +4,17 @@
 #include <conio.h>
 using namespace std;
 
-///// Versión 2.0 //////
+///// Versión 3.0 //////
 
 
 int main() {
 
 	Maquina fsm;
 
-	for(Event* incoming : vector<Event*>{new EventOn , new EventOff}) {
-		std::cout<<"FSM...."<<std::endl;
-		fsm.ReactTo(incoming);
-	}
+	Estado* currentState = new StateOff();
+	Event* incoming = new EventOn;
+
+	fsm.ReactTo(incoming);
 
 	getch() ;
     return 0;
