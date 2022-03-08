@@ -1,28 +1,21 @@
-#pragma hdrstop
-#pragma argsused
-
-#ifdef _WIN32
-#include <tchar.h>
-#else
-  typedef char _TCHAR;
-  #define _tmain main
-#endif
 #include <iostream>
 #include "dispatch.h"
+#include <vector>
 #include <conio.h>
-
-///// Versión 1.0 //////
 using namespace std;
 
-int main()
-{
+///// Versión 2.0 //////
 
-    State* currentState= new StateContainer();
-	Event* incommingEvent = new EventEmpty();
 
-	currentState->process(incommingEvent);
-	delete currentState;
-	delete incommingEvent;
+int main() {
+
+	Maquina fsm;
+
+	for(Event* incoming : vector<Event*>{new EventOn , new EventOff}) {
+		std::cout<<"FSM...."<<std::endl;
+		fsm.ReactTo(incoming);
+	}
+
 	getch() ;
     return 0;
 }

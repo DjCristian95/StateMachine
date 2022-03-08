@@ -1,101 +1,98 @@
 #ifndef  DISPATCH_H_INCLUDED
 #define  DISPATCH_H_INCLUDED
+#include <iostream>
+#include <string>
+
+using namespace std;
 
 
-class State;
-class Event;
+struct Estado {
 
-class Event{
-public:
-    virtual bool process(State*state)= 0;
-};
+   virtual void process(struct EventOff *) = 0;
 
-class State{
-public:
-    virtual bool process(Event* event)= 0;
-};
-
-class ShoppingCartState;
-class StateEmpty;  //estado vacío
-class StateContainer;     //estado contenedor
-
-class ShoppingCartEvent;
-class EventContainer;
-class EventEmpty;
-
-class ShoppingCartState : public State {
-public:
-     virtual bool process(EventEmpty* event)= 0;
-     virtual bool process(EventContainer* event)= 0;
-};
-
-class ShoppingCartEvent: public Event{
-    public:
-     virtual bool process(StateEmpty* event)= 0;
-     virtual bool process(StateContainer* event)= 0;
-};
-
-
-class EventEmpty : public ShoppingCartEvent{
-    public:
-    virtual bool process (State* state){
-        return ((ShoppingCartState*)state)->process(this);
-    }
-
-    virtual bool process (StateContainer* state){
-        return ((ShoppingCartState*)state)->process(this);
-    }
-    virtual bool process (StateEmpty* state){
-        return ((ShoppingCartState*)state)->process(this);
-    }
+   virtual void process(struct EventOn *) = 0;
 
 };
 
-class EventContainer : public ShoppingCartEvent{
-    public:
-    virtual bool process (State* state){
-        return ((ShoppingCartState*)state)->process(this);
-    }
 
-    virtual bool process (StateContainer* state){
-        return ((ShoppingCartState*)state)->process(this);
-    }
-    virtual bool process (StateEmpty* state){
-        return ((ShoppingCartState*)state)->process(this);
-    }
+struct ReactEstado : Estado {
+
+   ReactEstado(struct Maquina *fsm_) : fsm{fsm_} {}
+
+   void process(struct EventOff *on);
+
+   void process(struct EventOn *off);
+
+   struct Maquina* fsm  = nullptr;
 
 };
 
-class StateEmpty: public ShoppingCartState{
-public:
-    virtual bool process(Event* event){
-        return ((ShoppingCartEvent*)event)->process(this);
-    }
 
-    virtual bool process(EventEmpty* event){
-        std::cout<<"not consume event..."<< std::endl;
-        return false;
-    }
-    virtual bool process(EventContainer* event){
-        std::cout<<" consume event..." <<std::endl;
-        return true;
-    }
+struct Event {
+
+   virtual string name() = 0;
+
+   virtual void process(struct Estado *currentState) = 0;
+
 };
 
-class StateContainer: public ShoppingCartState{
-public:
-    virtual bool process(Event* event){
-        return ((ShoppingCartEvent*)event)->process(this);
-    }
 
-    virtual bool process(EventEmpty* event){
-        std::cout<<" consume event..."<< std::endl;
-        return false;
-    }
-    virtual bool process(EventContainer* event){
-        std::cout<<"   not consume event..." <<std::endl;
-        return true;
-    }
+struct EventOff : Event {
+
+   string name() {
+		 return "ClickOff";
+   }
+
+   void process(Estado *currentState) {
+		currentState->process(this);
+   }
+
 };
+
+
+struct EventOn : Event {
+
+   string name() {
+		return "ClickOn";
+   }
+
+   void process(Estado * currentState) {
+		currentState->process(this);
+   }
+
+   virtual~EventOn(){}
+
+};
+
+struct Maquina {
+
+	void ReactTo(Event *_ev) {
+		ReactEstado currentState{this};
+		_ev->process(&currentState);
+	}
+
+   void ConsumeEvent(Event *_ev) {
+		cout << "Consume event" << _ev->name() << endl;
+   }
+
+   void NotConsumeEvent(Event *_ev) {
+		cout << "Not consume event " << _ev->name() << endl;
+   }
+
+};
+
+
+void ReactEstado::process(EventOn *on) {
+
+   fsm->ConsumeEvent(on);
+
+}
+
+void ReactEstado::process(EventOff *off) {
+
+   fsm->NotConsumeEvent(off);
+
+}
+
 
 #endif // DISPATCH_H_INCLUDED
