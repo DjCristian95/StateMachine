@@ -4,147 +4,153 @@
 #include <string>
 using namespace std;
 
-struct Event {
+#include<iostream>
 
-   virtual string name() = 0;
-   virtual bool process(struct StateOn* onState) = 0;
-   virtual bool process(struct StateOff* offState) = 0;
-   virtual bool process(struct Estado *currentState) = 0;
+class State;
+class Event;
 
-};
-
-struct Estado {
-
-	virtual bool process (struct Event*) = 0;
-
-	virtual bool process(struct EventOff *) = 0;
-
-	virtual bool process(struct EventOn *) = 0;
-
+class Event {
+public:
+	virtual bool process(State*state)= 0;
 };
 
 
-class StateOn: public Estado {
+class State {
+public:
+	virtual bool process(Event* event)= 0;
+};
+
+class LampState;
+class StateOff;
+class StateOn;
+
+class LampEvent;
+class EventOn;
+class EventOff;
+
+class LampState : public State {
+public:
+	 virtual bool process(EventOff* event)= 0;
+	 virtual bool process(EventOn* event)= 0;
+};
+
+
+class LampEvent: public Event {
+	public:
+	 virtual bool process(StateOff* event)= 0;
+	 virtual bool process(StateOn* event)= 0;
+};
+
+
+class StateOff: public LampState {
+public:
+	virtual bool process(Event* event) {
+		return event->process(this);
+	}
+
+	virtual bool process(EventOff* ) {
+		return false;
+	}
+
+	virtual bool process(EventOn* ) {
+		return true;
+	}
+};
+
+class StateOn: public LampState {
 public:
 	virtual bool process(Event* event) {
 		return (event)->process(this);
 	}
 
-	virtual bool process(struct EventOff* event) {
+	virtual bool process(EventOff*) {
 		return true;
 	}
 
-	virtual bool process(struct EventOn* event) {
+	virtual bool process(EventOn* ) {
 		return false;
 	}
 };
 
 
-class StateOff: public Estado {
-public:
-	virtual bool process(Event* event) {
-		return (event)->process(this);
+class EventOff : public LampEvent {
+	public:
+	virtual bool process (State* state) {
+		return (state)->process(this);
 	}
 
-	virtual bool process(struct EventOff* event) {
-		return false;
+	virtual bool process ( StateOn* state) {
+		return (state)->process(this);
 	}
 
-	virtual bool process(struct EventOn* event) {
-		return true;
+	virtual bool process ( StateOff* state) {
+		return (state)->process(this);
 	}
 };
 
 
+class EventOn : public LampEvent {
+	public:
+	virtual bool process (State* state) {
+		return (state)->process(this);
+	}
 
-struct ReactEstado : Estado {
+	virtual bool process (StateOn* state) {
+		return (state)->process(this);
+	}
+
+	virtual bool process (StateOff* state) {
+		return (state)->process(this);
+	}
+};
+
+
+struct ReactEstado : State {
 
 	ReactEstado(struct Maquina *fsm_) : fsm{fsm_} {}
 
-	bool process (Event* event) {
-	   return (event)->process(this);
+	bool process ( Event*event) {
+		return (event)->process(this);
 	};
-
-	bool process(struct EventOff *on);
 
 	bool process(struct EventOn *off);
 
-    struct Maquina* fsm  = nullptr;
+	bool process(struct EventOff *on);
+
+	struct Maquina* fsm  = nullptr;
 
 };
 
-
-struct EventOff : Event {
-
-   string name() {
-		 return "ClickOff";
-   }
-
-   bool process(Estado *currentState) {
-		currentState->process(this);
-   }
-
-   bool process (StateOn* onState) {
-	   onState->process(this);
-   }
-
-   bool process (StateOff* offState) {
-		offState-> process(this);
-   }
-
-};
-
-
-struct EventOn : Event {
-
-	string name() {
-		return "ClickOn";
-	}
-
-	bool process(Estado * currentState) {
-		currentState->process(this);
-	}
-
-	bool process (StateOn* onState) {
-		onState-> process(this);
-	}
-
-	bool process (StateOff* offState) {
-		offState->process(this);
-	}
-
-};
 
 struct Maquina {
 
-   void ReactTo(Event *_ev) {
-		ReactEstado currentState{this};
-		_ev->process(&currentState);
-   }
+	   void ReactTo(Event *_ev) {
+		   ReactEstado currentState{this};
+		   _ev->process(&currentState);
+	   }
 
-   void ConsumeEvent(Event *_ev) {
-		cout << "Consume event " << _ev->name() << endl;
-   }
+	   bool ConsumeEvent(Event *_ev) {
+			std::cout << "Consume event"  << std::endl;
+			return true;//condicional para lanzar maquina
+	   }
 
-
-   void NotConsumeEvent(Event *_ev) {
-		cout << "Not consume event " << _ev->name() << endl;
-   }
+	   bool NotConsumeEvent(Event *_ev) {
+			std::cout << "Not consume event "  << std::endl;
+			return false;
+	   }
 
 };
 
 
 bool ReactEstado::process(EventOn *on) {
-
-   fsm->ConsumeEvent(on);
-
+	fsm->ConsumeEvent(on);
+	return true;
 }
+
 
 bool ReactEstado::process(EventOff *off) {
-
    fsm->NotConsumeEvent(off);
-
+   return false;
 }
 
-
-#endif // DISPATCH_H_INCLUDED
+ #endif // DISPATCH_H_INCLUDED

@@ -4,17 +4,16 @@
 #include <conio.h>
 using namespace std;
 
-///// Versión 3.0 //////
+///// Versión 4.0 //////
 
 
 int main() {
 
 	Maquina fsm;
 
-	Estado* currentState = new StateOff();
-	Event* incoming = new EventOn;
+	Event* incomingEvent = new EventOff;
 
-	fsm.ReactTo(incoming);
+	fsm.ReactTo(incomingEvent);
 
 	getch() ;
     return 0;
